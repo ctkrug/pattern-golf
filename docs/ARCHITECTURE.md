@@ -32,8 +32,9 @@ share module) the emoji grid.
 - **`judge.ts`** — `judge(pattern, puzzle)`: compiles the pattern and marks
   each positive/negative correct/wrong via unanchored `RegExp.test`
   (substring search, ADR 0002). Empty/invalid/pathological patterns leave the
-  board neutral. `isPathological` statically refuses nested-quantifier ReDoS
-  shapes.
+  board neutral. `isPathological` scans for a quantified group whose body
+  itself holds an unbounded quantifier, refusing nested-quantifier ReDoS
+  shapes even behind extra parens/alternation (`((a+))+`, `(a+|b)+`).
 - **`puzzles.ts`** — `PUZZLES`, the 12-puzzle seed library (par 2–8).
 - **`validate.ts`** — `validatePuzzle` / `validateLibrary`: reject empty
   columns, cross-column substring overlaps, and unsolvable/over-par puzzles.
@@ -43,6 +44,8 @@ share module) the emoji grid.
 - **`streak.ts`** — `recordSolve` / `displayStreak` with missed-day reset.
 - **`share.ts`** — `buildShareText`: spoiler-free Wordle-style emoji grid.
 - **`storage.ts`** — guarded `localStorage` for progress, streak, and mute.
+  Loaders sanitize the parsed value's *shape* (not just parse errors), so
+  hand-edited or stale entries degrade to safe defaults instead of crashing.
 - **`sfx.ts`** — `createSfx`: WebAudio-synthesized SFX, lazy context, mute,
   throttle; no-op without `AudioContext`.
 
@@ -51,7 +54,7 @@ share module) the emoji grid.
 - **`useGame.ts`** — the single state hook. Wires judge + streak + sfx +
   persistence; records distinct guesses, fires per-cell SFX, locks the input
   and opens the win overlay on the first solve of the day. Accepts an optional
-  `now: Date` for testing.
+  `now: Date` for testing (frozen in a memo; the SFX engine is built once).
 
 ### `src/components/`
 
@@ -73,8 +76,8 @@ share module) the emoji grid.
 
 ```
 npm run dev         # local dev server
-npm test            # vitest (75 tests: judge, validation, daily, scoring,
-                    #   streak, share, storage, sfx, App integration)
+npm test            # vitest (101 tests: judge, validation, daily, scoring,
+                    #   streak, share, storage, sfx, WinOverlay, App integration)
 npm run typecheck   # tsc --noEmit
 npm run lint        # oxlint
 npm run build       # tsc -b && vite build  ->  dist/  (base-relative)
