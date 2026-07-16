@@ -1,9 +1,9 @@
 # Pattern Golf
 
 A daily regex-golf puzzle: write the **shortest possible pattern** that matches every string
-in column A but none of the strings in column B. Type a guess, hit enter, and watch it light
-up green across every match and red across every string it wrongly catches — instantly, no
-submit button, no loading spinner.
+in column A but none of the strings in column B. Type and watch it light up green across every
+match and red across every string it wrongly catches — live on every keystroke, no submit
+button, no loading spinner.
 
 Pattern Golf is built around a real regex-matching judge, not string equality. Your pattern is
 compiled and run against a hidden test corpus of positive and negative strings on every
