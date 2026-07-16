@@ -40,7 +40,10 @@ is what makes that possible — you see the cost of every mistake the moment you
 
 ## Status
 
-Early scaffold — see [`docs/VISION.md`](docs/VISION.md) for the full plan and
+[![CI](https://github.com/ctkrug/pattern-golf/actions/workflows/ci.yml/badge.svg)](https://github.com/ctkrug/pattern-golf/actions/workflows/ci.yml)
+
+Early scaffold — see [`docs/VISION.md`](docs/VISION.md) for the full plan,
+[`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
 [`docs/BACKLOG.md`](docs/BACKLOG.md) for the build breakdown.
 
 ## Development
