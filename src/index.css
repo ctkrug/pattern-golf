@@ -315,6 +315,18 @@ body {
   }
 }
 
+/* Mobile: keep the pattern input reachable while scrolling the stacked board
+   (DESIGN.md §3). The input's opaque surface + a lift shadow separate it from
+   the cells sliding underneath; it sits below the win overlay (z-index 10). */
+@media (max-width: 640px) {
+  .inputbar {
+    position: sticky;
+    top: 8px;
+    z-index: 5;
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+  }
+}
+
 .board__col {
   padding: 24px 16px 16px;
   background: var(--surface-2);
