@@ -10,12 +10,75 @@ import type { CellResult, Judgement, Puzzle } from './types'
  * constructs. This is intentionally conservative: it rejects a small family
  * of patterns, none of which a real solver needs.
  */
+/**
+ * True if `s` contains an unescaped, non-character-class unbounded quantifier
+ * (`+`, `*`, or `{n,}`). Character classes and escaped characters are skipped
+ * so `[+*]` and `\+` read as literals, not quantifiers.
+ */
+function hasUnboundedQuantifier(s: string): boolean {
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i]
+    if (ch === '\\') {
+      i++ // skip the escaped character
+      continue
+    }
+    if (ch === '[') {
+      i++
+      while (i < s.length && s[i] !== ']') {
+        if (s[i] === '\\') i++
+        i++
+      }
+      continue
+    }
+    if (ch === '+' || ch === '*') return true
+    if (ch === '{' && /^\{\d+,\}/.test(s.slice(i))) return true
+  }
+  return false
+}
+
+/**
+ * Heuristic screen for patterns prone to catastrophic backtracking (ReDoS).
+ *
+ * A synchronous `RegExp.test` cannot be interrupted once it starts, so the
+ * only safe defense in a single thread is to refuse the dangerous shapes
+ * outright. We scan for the classic exponential construct: a group that is
+ * itself unbounded-quantified AND whose body already contains an unbounded
+ * quantifier — `(a+)+`, `(a*)*`, `((a+))+`, `(a+|b)+`, `(x(a*)y)+`. Nesting
+ * behind extra parens or alternation no longer slips past (unlike the old
+ * adjacent-only regex). Intentionally conservative: safe quantified groups
+ * like `(ab|cd)+` or `(a{2})+` are left alone, as no real solver needs the
+ * shapes we reject.
+ */
 export function isPathological(pattern: string): boolean {
-  // A group whose body ends in an unbounded quantifier, itself followed by
-  // an unbounded quantifier: (…+)+ / (…*)* / (…+)* / (…*)+ / (…{2,})+ …
-  const nestedQuantifier = /\([^)]*[+*]\)[+*]/
-  const nestedBraceQuantifier = /\([^)]*\{\d+,\}\)[+*]/
-  return nestedQuantifier.test(pattern) || nestedBraceQuantifier.test(pattern)
+  const openStack: number[] = []
+  for (let i = 0; i < pattern.length; i++) {
+    const ch = pattern[i]
+    if (ch === '\\') {
+      i++
+      continue
+    }
+    if (ch === '[') {
+      i++
+      while (i < pattern.length && pattern[i] !== ']') {
+        if (pattern[i] === '\\') i++
+        i++
+      }
+      continue
+    }
+    if (ch === '(') {
+      openStack.push(i)
+    } else if (ch === ')') {
+      const open = openStack.pop()
+      if (open === undefined) continue
+      const next = pattern[i + 1]
+      const unboundedlyQuantified =
+        next === '+' || next === '*' || (next === '{' && /^\{\d+,\}/.test(pattern.slice(i + 1)))
+      if (unboundedlyQuantified && hasUnboundedQuantifier(pattern.slice(open + 1, i))) {
+        return true
+      }
+    }
+  }
+  return false
 }
 
 /**
