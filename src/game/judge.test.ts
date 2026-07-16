@@ -76,11 +76,31 @@ describe('isPathological', () => {
     expect(isPathological('(a{2,})+')).toBe(true)
   })
 
+  it('flags nesting hidden behind extra parens or alternation', () => {
+    // Classic bombs the old adjacent-only regex missed.
+    expect(isPathological('((a+))+')).toBe(true)
+    expect(isPathological('(a+|b)+')).toBe(true)
+    expect(isPathological('((ab+))*')).toBe(true)
+    expect(isPathological('(x(a*)y)+')).toBe(true)
+    expect(isPathological('(a{2,}|z)+')).toBe(true)
+  })
+
   it('does not flag ordinary patterns', () => {
     expect(isPathological('foo')).toBe(false)
     expect(isPathological('\\d{3}-\\d{4}')).toBe(false)
     expect(isPathological('[a-z]+')).toBe(false)
     expect(isPathological('(ab)+')).toBe(false)
+  })
+
+  it('does not flag safe quantified groups without inner unbounded quantifiers', () => {
+    // A quantified group is only dangerous when its BODY is itself unbounded.
+    expect(isPathological('(ab|cd)+')).toBe(false)
+    expect(isPathological('(a{2})+')).toBe(false)
+    expect(isPathological('(\\d)+')).toBe(false)
+    // Escaped parens are literal text, not a group.
+    expect(isPathological('\\(a+\\)+')).toBe(false)
+    // A '+' inside a character class is a literal, not a quantifier.
+    expect(isPathological('([+*])+')).toBe(false)
   })
 })
 
