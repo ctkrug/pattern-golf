@@ -11,14 +11,19 @@ beforeEach(() => {
 describe('App — the live judge (wow moment)', () => {
   it('renders the wordmark and both columns', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { name: /pattern\s+golf/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /pattern\s+golf/i })).toBeInTheDocument()
     expect(screen.getByLabelText('Strings that must match')).toBeInTheDocument()
     expect(screen.getByLabelText('Strings that must not match')).toBeInTheDocument()
   })
 
   it('leaves every cell neutral before any pattern is typed', () => {
     render(<App />)
-    const cells = screen.getAllByRole('listitem')
+    // Scope to the two board columns; the how-to-play guide also has list items.
+    const columns = [
+      screen.getByLabelText('Strings that must match'),
+      screen.getByLabelText('Strings that must not match'),
+    ]
+    const cells = columns.flatMap((col) => within(col).getAllByRole('listitem'))
     expect(cells.every((c) => c.getAttribute('data-state') === 'neutral')).toBe(true)
   })
 
@@ -130,6 +135,14 @@ describe('App — the live judge (wow moment)', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     // Still solved: input stays locked.
     expect(input).toHaveAttribute('readonly')
+  })
+
+  it('renders the guide with a GitHub link and an FAQ', () => {
+    render(<App />)
+    const github = screen.getByRole('link', { name: /view on github/i })
+    expect(github).toHaveAttribute('href', 'https://github.com/ctkrug/pattern-golf')
+    expect(screen.getByRole('link', { name: /more by charlie krug/i })).toBeInTheDocument()
+    expect(screen.getByText(/is pattern golf a regex golf game/i)).toBeInTheDocument()
   })
 
   it('is solvable with the keyboard alone', async () => {

@@ -1,4 +1,5 @@
 import { Board } from './components/Board'
+import { Guide } from './components/Guide'
 import { InputBar } from './components/InputBar'
 import { Panel } from './components/Panel'
 import { StatsRail } from './components/StatsRail'
@@ -47,6 +48,8 @@ function App() {
           />
         </aside>
       </main>
+
+      <Guide />
 
       <footer className="app__footer">
         <span>A new puzzle every day · substring match, unanchored</span>
