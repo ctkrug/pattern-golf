@@ -4,6 +4,26 @@
   "version": "0.0.0",
   "description": "A daily regex-golf puzzle with a live match judge and a shareable result grid.",
   "type": "module",
+  "license": "MIT",
+  "author": "Charlie Krug",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctkrug/pattern-golf.git"
+  },
+  "homepage": "https://github.com/ctkrug/pattern-golf#readme",
+  "bugs": {
+    "url": "https://github.com/ctkrug/pattern-golf/issues"
+  },
+  "keywords": [
+    "regex",
+    "puzzle",
+    "game",
+    "daily-puzzle",
+    "wordle-like"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
