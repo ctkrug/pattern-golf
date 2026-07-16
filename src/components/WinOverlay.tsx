@@ -11,16 +11,14 @@ interface WinOverlayProps {
   onClose: () => void
 }
 
-async function copyText(text: string): Promise<boolean> {
+async function copyText(text: string): Promise<void> {
   try {
     if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(text)
-      return true
     }
   } catch {
-    // Fall through to the legacy path below.
+    // Clipboard blocked or unavailable — the on-screen preview is the fallback.
   }
-  return false
 }
 
 /**
@@ -48,8 +46,10 @@ export function WinOverlay({
   }, [])
 
   async function handleShare() {
-    const ok = await copyText(shareText)
-    setCopied(ok || true)
+    await copyText(shareText)
+    // Always confirm: on the rare clipboard failure the visible preview below
+    // is the guaranteed manual-copy fallback.
+    setCopied(true)
     setTimeout(() => setCopied(false), 2200)
   }
 
