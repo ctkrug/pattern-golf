@@ -58,14 +58,14 @@ describe('judge', () => {
     expect(result.positives.every((c) => c.state === 'neutral')).toBe(true)
   })
 
-  it('never reports solved on a partial pattern', () => {
-    // "f" matches all positives but neither negative — should still solve here,
-    // so use "o" which also matches nothing wrong but misses "bar"/"baz"... check a real partial.
-    const result = judge('o', puzzle)
-    // "o" is in every positive but not in negatives -> actually solved. Use a true partial:
-    const partial = judge('food', puzzle)
-    expect(result.solved).toBe(true)
-    expect(partial.solved).toBe(false)
+  it('solves when a pattern matches every positive and no negative', () => {
+    // "o" is a substring of foo/food/fool but of neither bar nor baz.
+    expect(judge('o', puzzle).solved).toBe(true)
+  })
+
+  it('does not solve a pattern that misses some positives', () => {
+    // "food" only matches "food", missing "foo" and "fool".
+    expect(judge('food', puzzle).solved).toBe(false)
   })
 })
 
