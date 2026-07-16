@@ -44,7 +44,7 @@ share module) the emoji grid.
 - **`streak.ts`** — `recordSolve` / `displayStreak` with missed-day reset.
 - **`share.ts`** — `buildShareText`: spoiler-free Wordle-style emoji grid.
 - **`storage.ts`** — guarded `localStorage` for progress, streak, and mute.
-  Loaders sanitize the parsed value's *shape* (not just parse errors), so
+  Loaders sanitize the parsed value's _shape_ (not just parse errors), so
   hand-edited or stale entries degrade to safe defaults instead of crashing.
 - **`sfx.ts`** — `createSfx`: WebAudio-synthesized SFX, lazy context, mute,
   throttle; no-op without `AudioContext`.
