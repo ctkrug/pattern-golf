@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { compilePattern, isPathological, judge } from './judge'
+import { PUZZLES } from './puzzles'
 import type { Puzzle } from './types'
 
 const puzzle: Puzzle = {
@@ -118,6 +119,50 @@ describe('compilePattern', () => {
   it('compiles a valid pattern to a usable RegExp', () => {
     const result = compilePattern('\\d+')
     expect('re' in result && result.re.test('a1b')).toBe(true)
+  })
+})
+
+describe('judge — hostile input against the real library', () => {
+  // Adversarial patterns: ReDoS bombs, huge literals, unicode, anchors,
+  // whitespace. None may throw; all must return a well-formed Judgement and
+  // finish effectively instantly (the ReDoS bombs are refused, not run).
+  const hostile = [
+    '(a+)+$',
+    '((a+))+',
+    '(a+|b)+',
+    '(.*)*',
+    'a'.repeat(5000),
+    '😀',
+    '\\u{1F600}',
+    '   ',
+    '^$',
+    '(?:)',
+    '\\',
+    '(',
+    '[',
+    '*abc',
+  ]
+
+  it('never throws and returns a full board for every puzzle', () => {
+    for (const puzzle of PUZZLES) {
+      for (const pattern of hostile) {
+        const result = judge(pattern, puzzle)
+        expect(result.positives).toHaveLength(puzzle.positives.length)
+        expect(result.negatives).toHaveLength(puzzle.negatives.length)
+        // A refused/invalid pattern leaves the whole board neutral.
+        if (!result.valid) {
+          expect(result.positives.every((c) => c.state === 'neutral')).toBe(true)
+        }
+      }
+    }
+  })
+
+  it('evaluates the whole hostile batch across the library well under a second', () => {
+    const start = performance.now()
+    for (const puzzle of PUZZLES) {
+      for (const pattern of hostile) judge(pattern, puzzle)
+    }
+    expect(performance.now() - start).toBeLessThan(500)
   })
 })
 
