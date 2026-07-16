@@ -55,8 +55,38 @@ function writeJSON(key: string, value: unknown): void {
   }
 }
 
+function isStringArray(v: unknown): v is string[] {
+  return Array.isArray(v) && v.every((x) => typeof x === 'string')
+}
+
+/**
+ * Coerce an arbitrary parsed value into a sound DayProgress. Persisted data
+ * can be hand-edited or left over from an older version, so we never trust its
+ * shape: a missing/non-string guess list, or any non-object, resets to empty.
+ */
+function sanitizeProgress(v: unknown): DayProgress {
+  if (typeof v !== 'object' || v === null) return EMPTY_PROGRESS
+  const o = v as Record<string, unknown>
+  if (!isStringArray(o.guesses)) return EMPTY_PROGRESS
+  const length = typeof o.length === 'number' && Number.isFinite(o.length) ? o.length : null
+  return { guesses: o.guesses, solved: o.solved === true, length }
+}
+
+/** Coerce an arbitrary parsed value into a sound StreakState. */
+function sanitizeStreak(v: unknown): StreakState {
+  if (typeof v !== 'object' || v === null) return EMPTY_STREAK
+  const o = v as Record<string, unknown>
+  const count =
+    typeof o.count === 'number' && Number.isFinite(o.count) && o.count >= 0
+      ? Math.floor(o.count)
+      : null
+  const lastSolvedKey = typeof o.lastSolvedKey === 'string' ? o.lastSolvedKey : null
+  if (count === null) return EMPTY_STREAK
+  return { count, lastSolvedKey }
+}
+
 export function loadProgress(dayKey: string): DayProgress {
-  return readJSON<DayProgress>(PROGRESS_PREFIX + dayKey, EMPTY_PROGRESS)
+  return sanitizeProgress(readJSON<unknown>(PROGRESS_PREFIX + dayKey, null))
 }
 
 export function saveProgress(dayKey: string, progress: DayProgress): void {
@@ -64,7 +94,7 @@ export function saveProgress(dayKey: string, progress: DayProgress): void {
 }
 
 export function loadStreak(): StreakState {
-  return readJSON<StreakState>(STREAK_KEY, EMPTY_STREAK)
+  return sanitizeStreak(readJSON<unknown>(STREAK_KEY, null))
 }
 
 export function saveStreak(state: StreakState): void {
@@ -72,7 +102,8 @@ export function saveStreak(state: StreakState): void {
 }
 
 export function loadMuted(): boolean {
-  return readJSON<boolean>(MUTE_KEY, false)
+  // Only a literal `true` mutes; any other stored value degrades to unmuted.
+  return readJSON<unknown>(MUTE_KEY, false) === true
 }
 
 export function saveMuted(muted: boolean): void {
