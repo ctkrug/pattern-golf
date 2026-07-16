@@ -65,10 +65,12 @@ share module) the emoji grid.
 - **`InputBar`** — live regex input, invalid indicator, idle example cycler.
 - **`StatsRail`** / **`MuteToggle`** — date/par/length/streak + mute.
 - **`WinOverlay`** — SOLVED stamp, stats, particle burst, share CTA.
+- **`Guide`** — below-the-fold what-it-is / how-to-play / FAQ copy plus the
+  GitHub and portfolio links; carries the page's search-intent text.
 
 ### `src/`
 
-- **`App.tsx`** — composes header, play area, rail, and win overlay.
+- **`App.tsx`** — composes header, play area, rail, guide, and win overlay.
 - **`index.css`** — the full blueprint theme (tokens, grid background,
   animations, responsive layout, reduced-motion).
 
@@ -76,9 +78,9 @@ share module) the emoji grid.
 
 ```
 npm run dev         # local dev server
-npm test            # vitest (101 tests: judge, validation, daily, scoring,
+npm test            # vitest (116 tests: judge, validation, daily, scoring,
                     #   streak, share, storage, sfx, WinOverlay, App integration)
 npm run typecheck   # tsc --noEmit
 npm run lint        # oxlint
-npm run build       # tsc -b && vite build  ->  dist/  (base-relative)
+npm run build       # tsc -b && vite build  ->  site/  (base-relative)
 ```
