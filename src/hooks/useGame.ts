@@ -32,6 +32,8 @@ export interface Game {
   shareText: string
   showWin: boolean
   dismissWin: () => void
+  /** Play the win fanfare (fired by the win overlay on mount). */
+  celebrate: () => void
 }
 
 export function useGame(now: Date = new Date()): Game {
@@ -147,5 +149,6 @@ export function useGame(now: Date = new Date()): Game {
     shareText,
     showWin,
     dismissWin: () => setShowWin(false),
+    celebrate: () => sfx.play('winFanfare'),
   }
 }
