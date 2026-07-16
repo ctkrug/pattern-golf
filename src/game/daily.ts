@@ -14,6 +14,11 @@ export function dayKey(date: Date): string {
   return date.toISOString().slice(0, 10)
 }
 
+/** The UTC day key `deltaDays` away from the given date (negative = earlier). */
+export function offsetDayKey(date: Date, deltaDays: number): string {
+  return dayKey(new Date(date.getTime() + deltaDays * MS_PER_DAY))
+}
+
 /**
  * The 1-based puzzle number for a date: whole UTC days since EPOCH, plus one.
  * Used as the puzzle's public number in the share grid.
