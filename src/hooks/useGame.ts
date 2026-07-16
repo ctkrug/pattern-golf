@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { dayKey, dayNumber, offsetDayKey, puzzleForDate } from '../game/daily'
 import { judge } from '../game/judge'
 import { buildShareText } from '../game/share'
-import { createSfx } from '../game/sfx'
+import { createSfx, type Sfx } from '../game/sfx'
 import {
   loadMuted,
   loadProgress,
@@ -36,13 +36,21 @@ export interface Game {
   celebrate: () => void
 }
 
-export function useGame(now: Date = new Date()): Game {
+export function useGame(nowInput?: Date): Game {
+  // Freeze "now" for the session: without a caller-supplied date, default it
+  // once so the memos below don't re-fire (and the puzzle can't flip) on every
+  // render as `new Date()` would.
+  const now = useMemo(() => nowInput ?? new Date(), [nowInput])
   const today = useMemo(() => dayKey(now), [now])
   const yesterday = useMemo(() => offsetDayKey(now, -1), [now])
   const puzzle = useMemo(() => puzzleForDate(now), [now])
   const puzzleNumber = useMemo(() => dayNumber(now), [now])
 
-  const sfx = useRef(createSfx(loadMuted())).current
+  // Lazily build the SFX engine exactly once; the ref initializer above would
+  // otherwise call createSfx()/loadMuted() on every render and discard it.
+  const sfxRef = useRef<Sfx | null>(null)
+  if (sfxRef.current === null) sfxRef.current = createSfx(loadMuted())
+  const sfx = sfxRef.current
 
   const initial = useMemo(() => loadProgress(today), [today])
   const [pattern, setPatternRaw] = useState(
