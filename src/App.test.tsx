@@ -65,6 +65,18 @@ describe('App — the live judge (wow moment)', () => {
     expect(input).toHaveAttribute('readonly')
   })
 
+  it('recovers from corrupt localStorage instead of white-screening', () => {
+    // A hostile / stale store: wrong-shape progress and streak, junk mute.
+    localStorage.setItem('pg:progress:' + new Date().toISOString().slice(0, 10), '{"guesses":null}')
+    localStorage.setItem('pg:streak', '"broken"')
+    localStorage.setItem('pg:muted', '"loud"')
+
+    render(<App />)
+    // The board still renders and the input is usable.
+    expect(screen.getByLabelText('Strings that must match')).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: /regex pattern/i })).not.toHaveAttribute('readonly')
+  })
+
   it('persists progress across a remount (reload)', () => {
     const { unmount } = render(<App />)
     const input = screen.getByRole('textbox', { name: /regex pattern/i })
