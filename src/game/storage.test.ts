@@ -53,7 +53,10 @@ describe('progress persistence', () => {
   })
 
   it('rejects a guess list that is not all strings', () => {
-    localStorage.setItem('pg:progress:2026-07-16', '{"guesses":[1,2,3],"solved":false,"length":null}')
+    localStorage.setItem(
+      'pg:progress:2026-07-16',
+      '{"guesses":[1,2,3],"solved":false,"length":null}',
+    )
     expect(loadProgress('2026-07-16')).toEqual(EMPTY_PROGRESS)
   })
 

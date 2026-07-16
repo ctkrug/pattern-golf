@@ -21,7 +21,10 @@ class FakeGain {
   gain = new FakeParam()
   connect() {}
 }
-function makeFakeContextClass(counter: { oscillators: number }, opts: { throwOnOsc?: boolean } = {}) {
+function makeFakeContextClass(
+  counter: { oscillators: number },
+  opts: { throwOnOsc?: boolean } = {},
+) {
   return class FakeAudioContext {
     currentTime = 0
     destination = {}
@@ -122,12 +125,14 @@ describe('createSfx with a live (stubbed) AudioContext', () => {
     const counter = { oscillators: 0 }
     const Ctor = makeFakeContextClass(counter)
     const spy = vi.fn(() => new Ctor())
-    installAudioContext(class extends (Ctor as ReturnType<typeof makeFakeContextClass>) {
-      constructor() {
-        super()
-        spy()
-      }
-    })
+    installAudioContext(
+      class extends (Ctor as ReturnType<typeof makeFakeContextClass>) {
+        constructor() {
+          super()
+          spy()
+        }
+      },
+    )
     const sfx = createSfx()
     sfx.play('matchBlip')
     sfx.play('missThud')
