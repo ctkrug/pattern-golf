@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react'
 // served from a subpath (e.g. apps.charliekrug.com/pattern-golf).
 export default defineConfig({
   base: './',
+  // Emit the production build into site/ so the servable output is the page
+  // published at apps.charliekrug.com/pattern-golf (site_build_dir = site).
+  build: { outDir: 'site' },
   plugins: [react()],
   test: {
     environment: 'jsdom',
