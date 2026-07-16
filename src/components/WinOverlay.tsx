@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { formatDelta, scoreResult } from '../game/scoring'
 
 interface WinOverlayProps {
@@ -37,6 +37,7 @@ export function WinOverlay({
   onClose,
 }: WinOverlayProps) {
   const [copied, setCopied] = useState(false)
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const score = scoreResult(length, par)
 
   useEffect(() => {
@@ -45,12 +46,16 @@ export function WinOverlay({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Clear any pending "copied" reset if the overlay unmounts first.
+  useEffect(() => () => clearTimeout(copiedTimer.current ?? undefined), [])
+
   async function handleShare() {
     await copyText(shareText)
     // Always confirm: on the rare clipboard failure the visible preview below
     // is the guaranteed manual-copy fallback.
     setCopied(true)
-    setTimeout(() => setCopied(false), 2200)
+    clearTimeout(copiedTimer.current ?? undefined)
+    copiedTimer.current = setTimeout(() => setCopied(false), 2200)
   }
 
   const particles = Array.from({ length: 14 }, (_, i) => i)
