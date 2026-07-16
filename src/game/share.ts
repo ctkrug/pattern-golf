@@ -28,7 +28,7 @@ export interface ShareInput {
 export function buildShareText(input: ShareInput): string {
   const { puzzle, guesses, length, puzzleNumber } = input
   const score = scoreResult(length, puzzle.par)
-  const header = `Pattern Golf #${puzzleNumber} — ${length}/${puzzle.par} (${formatDelta(
+  const header = `Pattern Golf #${puzzleNumber} · ${length}/${puzzle.par} (${formatDelta(
     score.delta,
   )})`
 

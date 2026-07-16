@@ -21,7 +21,7 @@ describe('buildShareText', () => {
       guesses: ['foo'],
       length: 3,
     })
-    expect(text.split('\n')[0]).toBe('Pattern Golf #42 — 3/3 (E)')
+    expect(text.split('\n')[0]).toBe('Pattern Golf #42 · 3/3 (E)')
   })
 
   it('renders one emoji row per guess with green/red squares', () => {
