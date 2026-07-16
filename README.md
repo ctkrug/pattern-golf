@@ -18,17 +18,19 @@ one of the most useful small languages a developer ever learns, and there's no d
 that makes practicing it feel like play instead of a chore. The instant green/red feedback loop
 is what makes that possible — you see the cost of every mistake the moment you make it.
 
-## Features (planned)
+## Features
 
-- **Live judge** — a real regex engine validates your pattern against a hidden corpus of
-  positive/negative test strings on every keystroke; no "submit and hope."
-- **Daily puzzle** — one puzzle per day, deterministic by date, same puzzle for everyone.
-- **Golf scoring** — solved length vs. par, with a bonus for beating par.
-- **Wordle-style share grid** — copy a colored emoji grid of your guesses to share your result
-  without spoiling the answer.
-- **Streaks** — daily streak tracking persisted locally.
-- **Puzzle generation pipeline** — puzzles are generated and validated (a solvable, minimal
-  pattern is confirmed to exist) rather than hand-picked one at a time.
+- **Live judge** — the browser's real `RegExp` engine validates your pattern against a corpus of
+  positive/negative test strings on every keystroke; no "submit and hope." Substring-search
+  semantics, so you hunt the structural feature that separates the columns.
+- **Daily puzzle** — one puzzle per day, a deterministic function of the date, the same for
+  everyone; consecutive days cycle the whole library before repeating.
+- **Golf scoring** — solved length vs. par, scored ace / birdie / par / bogey.
+- **Wordle-style share grid** — copy a colored emoji grid of your guess history without ever
+  revealing your pattern.
+- **Streaks** — daily streak tracking, persisted locally, with automatic missed-day reset.
+- **Validated puzzle library** — every puzzle is checked for solvability, reachable par, and
+  no cross-column substring overlaps before it ships; pathological (ReDoS) patterns are refused.
 
 ## Stack
 
@@ -42,8 +44,9 @@ is what makes that possible — you see the cost of every mistake the moment you
 
 [![CI](https://github.com/ctkrug/pattern-golf/actions/workflows/ci.yml/badge.svg)](https://github.com/ctkrug/pattern-golf/actions/workflows/ci.yml)
 
-Early scaffold — see [`docs/VISION.md`](docs/VISION.md) for the full plan,
-[`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
+Core game is playable end to end — live judge, daily puzzle, scoring, share grid, and streaks.
+See [`docs/VISION.md`](docs/VISION.md) for the full plan, [`docs/DESIGN.md`](docs/DESIGN.md) for
+the visual direction, [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the codebase map, and
 [`docs/BACKLOG.md`](docs/BACKLOG.md) for the build breakdown.
 
 ## Development
