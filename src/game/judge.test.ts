@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import fc from 'fast-check'
 import { compilePattern, isPathological, judge } from './judge'
 import { PUZZLES } from './puzzles'
 import type { Puzzle } from './types'
@@ -177,5 +178,36 @@ describe('judge — property: substring matching agrees with String.includes for
         expect(cell.matched).toBe(cell.value.includes(lit))
       })
     }
+  })
+
+  // Alphanumeric strings are literal regexes (no metacharacters), so matching
+  // must agree with String.includes and solved must follow from the columns.
+  const literal = fc.stringMatching(/^[a-zA-Z0-9]{1,6}$/)
+  const corpusArb = fc.array(fc.stringMatching(/^[a-zA-Z0-9]{0,8}$/), {
+    minLength: 1,
+    maxLength: 6,
+  })
+
+  it('property: matched agrees with String.includes for any literal pattern', () => {
+    fc.assert(
+      fc.property(literal, corpusArb, corpusArb, (pat, positives, negatives) => {
+        const p: Puzzle = { id: 'p', title: 't', positives, negatives, par: 1 }
+        const result = judge(pat, p)
+        result.positives.forEach((c) => expect(c.matched).toBe(c.value.includes(pat)))
+        result.negatives.forEach((c) => expect(c.matched).toBe(c.value.includes(pat)))
+      }),
+    )
+  })
+
+  it('property: solved iff every positive matches and no negative matches', () => {
+    fc.assert(
+      fc.property(literal, corpusArb, corpusArb, (pat, positives, negatives) => {
+        const p: Puzzle = { id: 'p', title: 't', positives, negatives, par: 1 }
+        const result = judge(pat, p)
+        const expected =
+          positives.every((v) => v.includes(pat)) && negatives.every((v) => !v.includes(pat))
+        expect(result.solved).toBe(expected)
+      }),
+    )
   })
 })
