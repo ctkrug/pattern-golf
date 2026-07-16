@@ -1,6 +1,10 @@
+import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 import { dayKey, dayNumber, EPOCH, puzzleForDate } from './daily'
+import { PUZZLES } from './puzzles'
 import type { Puzzle } from './types'
+
+const MS_PER_DAY = 86_400_000
 
 const lib: Puzzle[] = [
   { id: 'a', title: 'A', positives: ['x'], negatives: ['y'], par: 1, solution: 'x' },
@@ -51,5 +55,41 @@ describe('puzzleForDate', () => {
 
   it('uses the real library by default', () => {
     expect(puzzleForDate(new Date(EPOCH)).id).toBeTruthy()
+  })
+
+  it('property: always returns an in-library puzzle for any date', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: -50_000, max: 50_000 }), (offsetDays) => {
+        const d = new Date(EPOCH + offsetDays * MS_PER_DAY)
+        expect(PUZZLES).toContain(puzzleForDate(d))
+      }),
+    )
+  })
+
+  it('property: the selection is stable across times within the same UTC day', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: -20_000, max: 20_000 }),
+        fc.integer({ min: 0, max: MS_PER_DAY - 1 }),
+        (offsetDays, msIntoDay) => {
+          const midnight = EPOCH + offsetDays * MS_PER_DAY
+          const a = puzzleForDate(new Date(midnight))
+          const b = puzzleForDate(new Date(midnight + msIntoDay))
+          expect(b.id).toBe(a.id)
+        },
+      ),
+    )
+  })
+
+  it('property: any run of library-length consecutive days covers every puzzle once', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: -10_000, max: 10_000 }), (startDay) => {
+        const ids = new Set<string>()
+        for (let i = 0; i < PUZZLES.length; i++) {
+          ids.add(puzzleForDate(new Date(EPOCH + (startDay + i) * MS_PER_DAY)).id)
+        }
+        expect(ids.size).toBe(PUZZLES.length)
+      }),
+    )
   })
 })
