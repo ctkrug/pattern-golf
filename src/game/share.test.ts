@@ -1,5 +1,7 @@
+import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 import { buildShareText } from './share'
+import { PUZZLES } from './puzzles'
 import type { Puzzle } from './types'
 
 const puzzle: Puzzle = {
@@ -64,5 +66,27 @@ describe('buildShareText', () => {
       length: 2,
     })
     expect(text.split('\n')[0]).toContain('(-1)')
+  })
+
+  it('property: grid rows are emoji-only, one per guess, and leak no pattern text', () => {
+    fc.assert(
+      fc.property(
+        fc.constantFrom(...PUZZLES),
+        // Arbitrary guesses, including regex metacharacters and invalid syntax.
+        fc.array(fc.string(), { maxLength: 12 }),
+        fc.integer({ min: 1, max: 20 }),
+        (p, guesses, length) => {
+          const text = buildShareText({ puzzleNumber: 1, puzzle: p, guesses, length })
+          const lines = text.split('\n')
+          expect(lines.length).toBe(guesses.length + 1)
+          const cells = p.positives.length + p.negatives.length
+          for (const row of lines.slice(1)) {
+            const chars = [...row]
+            expect(chars).toHaveLength(cells)
+            expect(chars.every((c) => c === '🟩' || c === '🟥' || c === '⬜')).toBe(true)
+          }
+        },
+      ),
+    )
   })
 })
