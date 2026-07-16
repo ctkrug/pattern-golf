@@ -56,6 +56,12 @@ describe('validatePuzzle', () => {
     expect(err?.reason).toMatch(/does not solve/)
   })
 
+  it('rejects a puzzle whose solution is not a valid regex', () => {
+    // An unclosed group compiles to an error, so the solution is unusable.
+    const err = validatePuzzle({ ...sound, solution: '(' })
+    expect(err?.reason).toMatch(/is not a valid regex/)
+  })
+
   it('rejects a puzzle whose solution is longer than par', () => {
     const err = validatePuzzle({ ...sound, par: 1, solution: 'ca' })
     expect(err?.reason).toMatch(/exceeds par/)
