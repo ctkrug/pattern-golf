@@ -1,16 +1,6 @@
 import type { CellResult, Judgement, Puzzle } from './types'
 
 /**
- * Heuristic screen for patterns prone to catastrophic backtracking (ReDoS).
- *
- * A synchronous `RegExp.test` cannot be interrupted once it starts, so the
- * only safe defense in a single thread is to refuse to run the dangerous
- * shapes at all. We flag nested unbounded quantifiers — `(a+)+`, `(a*)*`,
- * `(.*)*`, `(a+)*` and friends — which are the classic exponential-blowup
- * constructs. This is intentionally conservative: it rejects a small family
- * of patterns, none of which a real solver needs.
- */
-/**
  * True if `s` contains an unescaped, non-character-class unbounded quantifier
  * (`+`, `*`, or `{n,}`). Character classes and escaped characters are skipped
  * so `[+*]` and `\+` read as literals, not quantifiers.
