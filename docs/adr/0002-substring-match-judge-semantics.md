@@ -28,7 +28,7 @@ away, it just doesn't impose it.
 ## Consequences
 
 - Puzzle authors must choose positive/negative corpora where substring search actually
-  discriminates (e.g. a negative string can't merely *contain* a positive string as a
+  discriminates (e.g. a negative string can't merely _contain_ a positive string as a
   substring, or every pattern that solves the positive would also match the negative "for
   free" in a way that breaks the puzzle's intended difficulty). This is a puzzle-generation
   validation concern, not a judge concern — tracked in the BACKLOG under puzzle validation.
