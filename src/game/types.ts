@@ -12,6 +12,11 @@ export interface Puzzle {
   negatives: string[]
   /** Target pattern length ("par"), in characters. */
   par: number
+  /**
+   * A known pattern that solves this puzzle. Used by validation to prove the
+   * puzzle is solvable and to sanity-check par; players never see it.
+   */
+  solution?: string
 }
 
 /** How a single string in a column evaluated against the current pattern. */
