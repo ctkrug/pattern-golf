@@ -13,11 +13,7 @@ interface StringCellProps {
  */
 export function StringCell({ cell, index }: StringCellProps) {
   return (
-    <li
-      className="cell"
-      data-state={cell.state}
-      style={{ ['--i' as string]: index }}
-    >
+    <li className="cell" data-state={cell.state} style={{ ['--i' as string]: index }}>
       <span className="cell__text">{cell.value}</span>
       <span className="cell__mark" aria-hidden="true">
         {cell.state === 'correct' ? '✓' : cell.state === 'wrong' ? '✕' : ''}

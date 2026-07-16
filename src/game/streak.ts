@@ -35,15 +35,8 @@ export function recordSolve(
  * the app after skipping one or more days shows 0 (the run is broken), which
  * is what the player sees until they solve again.
  */
-export function displayStreak(
-  state: StreakState,
-  todayKey: string,
-  yesterdayKey: string,
-): number {
-  if (
-    state.lastSolvedKey === todayKey ||
-    state.lastSolvedKey === yesterdayKey
-  ) {
+export function displayStreak(state: StreakState, todayKey: string, yesterdayKey: string): number {
+  if (state.lastSolvedKey === todayKey || state.lastSolvedKey === yesterdayKey) {
     return state.count
   }
   return 0

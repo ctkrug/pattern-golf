@@ -22,9 +22,7 @@ export function isPathological(pattern: string): boolean {
  * Compile a user pattern into a RegExp, or return an error message.
  * Empty and pathological patterns are treated as "cannot evaluate".
  */
-export function compilePattern(
-  pattern: string,
-): { re: RegExp } | { error: string } {
+export function compilePattern(pattern: string): { re: RegExp } | { error: string } {
   if (isPathological(pattern)) {
     return { error: 'pattern too complex' }
   }
@@ -35,11 +33,7 @@ export function compilePattern(
   }
 }
 
-function judgeColumn(
-  values: string[],
-  re: RegExp,
-  shouldMatch: boolean,
-): CellResult[] {
+function judgeColumn(values: string[], re: RegExp, shouldMatch: boolean): CellResult[] {
   return values.map((value) => {
     const matched = re.test(value)
     return {
@@ -87,8 +81,7 @@ export function judge(pattern: string, puzzle: Puzzle): Judgement {
   const positives = judgeColumn(puzzle.positives, compiled.re, true)
   const negatives = judgeColumn(puzzle.negatives, compiled.re, false)
   const solved =
-    positives.every((c) => c.state === 'correct') &&
-    negatives.every((c) => c.state === 'correct')
+    positives.every((c) => c.state === 'correct') && negatives.every((c) => c.state === 'correct')
 
   return { valid: true, empty: false, positives, negatives, solved }
 }

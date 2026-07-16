@@ -38,9 +38,7 @@ export function StatsRail({
   onToggleMute,
 }: StatsRailProps) {
   const score = solved ? scoreResult(length, par) : null
-  const lengthValue = score
-    ? `${length} (${formatDelta(score.delta)})`
-    : String(length)
+  const lengthValue = score ? `${length} (${formatDelta(score.delta)})` : String(length)
 
   return (
     <Panel className="stats" label={`#${puzzleNumber}`}>
@@ -52,10 +50,7 @@ export function StatsRail({
         <Stat label="Par" value={String(par)} />
         <Stat label="Length" value={lengthValue} />
         <Stat label="Streak" value={`🔥 ${streak}`} />
-        <Stat
-          label="Status"
-          value={solved ? (score?.term ?? 'solved') : 'drafting'}
-        />
+        <Stat label="Status" value={solved ? (score?.term ?? 'solved') : 'drafting'} />
       </div>
     </Panel>
   )

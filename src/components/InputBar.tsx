@@ -21,9 +21,7 @@ export function InputBar({ pattern, onChange, error, solved }: InputBarProps) {
 
   useEffect(() => {
     if (pattern.length > 0) return
-    const reduce = window.matchMedia?.(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     if (reduce) return
     const id = setInterval(() => {
       setExampleIdx((i) => (i + 1) % EXAMPLES.length)

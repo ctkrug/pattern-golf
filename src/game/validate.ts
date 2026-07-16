@@ -35,14 +35,10 @@ export function validatePuzzle(puzzle: Puzzle): ValidationError | null {
   for (const pos of puzzle.positives) {
     for (const neg of puzzle.negatives) {
       if (neg.includes(pos)) {
-        return err(
-          `negative "${neg}" contains positive "${pos}" as a substring`,
-        )
+        return err(`negative "${neg}" contains positive "${pos}" as a substring`)
       }
       if (pos.includes(neg)) {
-        return err(
-          `positive "${pos}" contains negative "${neg}" as a substring`,
-        )
+        return err(`positive "${pos}" contains negative "${neg}" as a substring`)
       }
     }
   }

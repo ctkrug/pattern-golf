@@ -59,11 +59,7 @@ export function WinOverlay({
     <div className="win" role="dialog" aria-modal="true" aria-label="Puzzle solved">
       <div className="win__particles" aria-hidden="true">
         {particles.map((i) => (
-          <span
-            key={i}
-            className="win__tick"
-            style={{ ['--p' as string]: i }}
-          />
+          <span key={i} className="win__tick" style={{ ['--p' as string]: i }} />
         ))}
       </div>
       <div className="win__card">

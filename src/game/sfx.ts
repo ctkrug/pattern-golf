@@ -80,10 +80,7 @@ export function createSfx(initialMuted = false): Sfx {
     // Quick attack, exponential release for a plucky, non-buzzy tone.
     gain.gain.setValueAtTime(0.0001, start + note.at)
     gain.gain.exponentialRampToValueAtTime(note.gain, start + note.at + 0.01)
-    gain.gain.exponentialRampToValueAtTime(
-      0.0001,
-      start + note.at + note.dur,
-    )
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + note.at + note.dur)
     osc.connect(gain)
     gain.connect(context.destination)
     osc.start(start + note.at)

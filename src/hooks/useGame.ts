@@ -46,9 +46,7 @@ export function useGame(now: Date = new Date()): Game {
 
   const initial = useMemo(() => loadProgress(today), [today])
   const [pattern, setPatternRaw] = useState(
-    initial.solved && initial.guesses.length
-      ? initial.guesses[initial.guesses.length - 1]
-      : '',
+    initial.solved && initial.guesses.length ? initial.guesses[initial.guesses.length - 1] : '',
   )
   const [guesses, setGuesses] = useState<string[]>(initial.guesses)
   const [solved, setSolved] = useState(initial.solved)
@@ -68,9 +66,7 @@ export function useGame(now: Date = new Date()): Game {
 
       // Record each distinct, valid, non-empty pattern in guess history.
       if (result.valid && next.length > 0) {
-        setGuesses((prev) =>
-          prev[prev.length - 1] === next ? prev : [...prev, next],
-        )
+        setGuesses((prev) => (prev[prev.length - 1] === next ? prev : [...prev, next]))
       }
 
       // Play per-cell feedback for the fresh evaluation.

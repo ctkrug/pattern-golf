@@ -24,11 +24,7 @@ export function offsetDayKey(date: Date, deltaDays: number): string {
  * Used as the puzzle's public number in the share grid.
  */
 export function dayNumber(date: Date): number {
-  const utcMidnight = Date.UTC(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-  )
+  const utcMidnight = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
   return Math.floor((utcMidnight - EPOCH) / MS_PER_DAY) + 1
 }
 
@@ -37,14 +33,10 @@ export function dayNumber(date: Date): number {
  * day always yields the same puzzle, and consecutive days cycle through the
  * whole library before any puzzle repeats.
  */
-export function puzzleForDate(
-  date: Date,
-  library: Puzzle[] = PUZZLES,
-): Puzzle {
+export function puzzleForDate(date: Date, library: Puzzle[] = PUZZLES): Puzzle {
   const n = dayNumber(date)
   // Modulo the 0-based offset so day 1 -> library[0]; guard negatives (dates
   // before EPOCH) so the index is always in range.
-  const index = ((((n - 1) % library.length) + library.length) %
-    library.length) as number
+  const index = ((((n - 1) % library.length) + library.length) % library.length) as number
   return library[index]
 }

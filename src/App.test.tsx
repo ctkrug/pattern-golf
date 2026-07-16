@@ -11,21 +11,15 @@ beforeEach(() => {
 describe('App — the live judge (wow moment)', () => {
   it('renders the wordmark and both columns', () => {
     render(<App />)
-    expect(
-      screen.getByRole('heading', { name: /pattern\s+golf/i }),
-    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /pattern\s+golf/i })).toBeInTheDocument()
     expect(screen.getByLabelText('Strings that must match')).toBeInTheDocument()
-    expect(
-      screen.getByLabelText('Strings that must not match'),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Strings that must not match')).toBeInTheDocument()
   })
 
   it('leaves every cell neutral before any pattern is typed', () => {
     render(<App />)
     const cells = screen.getAllByRole('listitem')
-    expect(cells.every((c) => c.getAttribute('data-state') === 'neutral')).toBe(
-      true,
-    )
+    expect(cells.every((c) => c.getAttribute('data-state') === 'neutral')).toBe(true)
   })
 
   it('lights up cells as the pattern is typed, with no submit', () => {
@@ -36,9 +30,7 @@ describe('App — the live judge (wow moment)', () => {
     const positives = screen.getByLabelText('Strings that must match')
     const posCells = within(positives).getAllByRole('listitem')
     // At least one positive should have left the neutral state immediately.
-    expect(posCells.some((c) => c.getAttribute('data-state') !== 'neutral')).toBe(
-      true,
-    )
+    expect(posCells.some((c) => c.getAttribute('data-state') !== 'neutral')).toBe(true)
   })
 
   it('shows an inline warning for an invalid pattern instead of crashing', () => {
@@ -82,8 +74,6 @@ describe('App — the live judge (wow moment)', () => {
 
     render(<App />)
     // Reloaded solved: input is read-only again without retyping.
-    expect(
-      screen.getByRole('textbox', { name: /regex pattern/i }),
-    ).toHaveAttribute('readonly')
+    expect(screen.getByRole('textbox', { name: /regex pattern/i })).toHaveAttribute('readonly')
   })
 })

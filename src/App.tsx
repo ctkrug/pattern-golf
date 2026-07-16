@@ -15,8 +15,7 @@ function App() {
       <header className="app__header">
         <Wordmark />
         <p className="app__tagline">
-          Write the shortest regex that matches every{' '}
-          <strong>A</strong> and no <strong>B</strong>.
+          Write the shortest regex that matches every <strong>A</strong> and no <strong>B</strong>.
         </p>
       </header>
 
@@ -27,9 +26,7 @@ function App() {
               pattern={game.pattern}
               onChange={game.setPattern}
               error={
-                !game.judgement.valid && !game.judgement.empty
-                  ? game.judgement.error
-                  : undefined
+                !game.judgement.valid && !game.judgement.empty ? game.judgement.error : undefined
               }
               solved={game.solved}
             />

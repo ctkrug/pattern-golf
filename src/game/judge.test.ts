@@ -14,11 +14,7 @@ describe('judge', () => {
   it('marks positives correct when matched and negatives correct when excluded', () => {
     const result = judge('foo', puzzle)
     expect(result.valid).toBe(true)
-    expect(result.positives.map((c) => c.state)).toEqual([
-      'correct',
-      'correct',
-      'correct',
-    ])
+    expect(result.positives.map((c) => c.state)).toEqual(['correct', 'correct', 'correct'])
     expect(result.negatives.map((c) => c.state)).toEqual(['correct', 'correct'])
     expect(result.solved).toBe(true)
   })
